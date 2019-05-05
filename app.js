@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
 var rfs = require('rotating-file-stream')
@@ -17,20 +17,22 @@ app.set('view engine', 'pug');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var logDirectory = path.join(__dirname, 'log');
+/*var logDirectory = path.join(__dirname, 'log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 var accessLogStream = rfs('pdfgenerator.log', {
   interval: '1d', // rotate daily
   path    : logDirectory
-});
-
-app.use(logger('common', {stream: accessLogStream}))
+});*/
+//
+//app.use(logger('common', {stream: accessLogStream}))
 
 app.use('/', indexRouter);
 app.use('/pdf', pagePreview);
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

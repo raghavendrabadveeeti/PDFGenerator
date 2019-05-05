@@ -2,8 +2,10 @@
   "name": "pdfgenerator",
   "version": "1.0.0",
   "private": true,
+  "bin": "app.js",
   "scripts": {
     "start": "node ./bin/www",
+    "build": "pkg package.json",
     "dev": "nodemon ./bin/www",
     "stop": "lsof -ti :3000 | xargs kill"
   },
@@ -15,7 +17,9 @@
     "http-errors": "1.7.2",
     "morgan": "1.9.1",
     "pug": "2.0.3",
-    "rotating-file-stream": "1.4.1"
+    "rotating-file-stream": "1.4.1",
+    "pkg": "4.3.1",
+    "easy-pdf-merge": "0.2.1"
   },
   "devDependencies": {
     "nodemon": "1.18.11"
@@ -23,5 +27,17 @@
   "engines": {
     "node": ">= 9.8.0",
     "npm": ">= 5.6.0"
+  },
+  "pkg": {
+    "assets": [
+      "views/**/*",
+      "public/**/*"
+    ],
+    "scripts": [
+      "routes/**/*"
+    ],
+    "targets": [
+      "node9"
+    ]
   }
 }
