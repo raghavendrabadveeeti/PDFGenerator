@@ -4,12 +4,14 @@ var path = require('path');
 //var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs');
-var rfs = require('rotating-file-stream')
+var rfs = require('rotating-file-stream');
+var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var pagePreview = require('./routes/pagePreview');
 
 var app = express();
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,8 +33,6 @@ var accessLogStream = rfs('pdfgenerator.log', {
 
 app.use('/', indexRouter);
 app.use('/pdf', pagePreview);
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

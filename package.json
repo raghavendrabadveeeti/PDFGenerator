@@ -19,7 +19,9 @@
     "pug": "2.0.3",
     "rotating-file-stream": "1.4.1",
     "pkg": "4.3.1",
-    "easy-pdf-merge": "0.2.1"
+    "easy-pdf-merge": "0.2.1",
+    "pm2": "3.5.0",
+    "cors": "2.8.5"
   },
   "devDependencies": {
     "nodemon": "1.18.11"
