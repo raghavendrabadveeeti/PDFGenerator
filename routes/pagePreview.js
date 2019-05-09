@@ -6,16 +6,30 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
+      async function getPageSize(page) {
+        let maximumPageRenderSize;
+        try {
+          maximumPageRenderSize = await page.evaluate(() => maximumPageRenderSize);
+        } catch (e) {
+          console.log(e);
+          maximumPageRenderSize = [11.69, 8.27];
+        }
+        return maximumPageRenderSize;
+      }
+
       (async () => {
 
         const DELTA = 0.8;
         let random = getRandom();
         const browser = await puppeteer.launch({headless: true, pipe: true, ignoreHTTPSErrors: true})
         try {
-          console.log(random, "Total Process Start", new Date());
+          let startTime = new Date();
+          console.log(random, "Total Process Start", startTime);
 
           const page = await browser.newPage();
           let queryString = req._parsedUrl.search;
+
+          req.setTimeout(0);
 
           // console.log(queryString);
 
@@ -25,8 +39,8 @@ router.get('/', function (req, res, next) {
             timeout  : 0
           });
 
-          let maximumPageRenderSize = await page.evaluate(() => maximumPageRenderSize);
-          maximumPageRenderSize = (!maximumPageRenderSize) ? [11.69, 8.27] : maximumPageRenderSize;
+          console.log(random, "Page Loaded Completed", new Date());
+          let maximumPageRenderSize = await getPageSize(page);
 
           const pdf = await page.pdf(
               {
@@ -36,11 +50,13 @@ router.get('/', function (req, res, next) {
                 margin         : {top: 0, right: '0.2in', bottom: 0, left: '0.4in'},
               });
 
+          console.log(random, "PDF  Completed", new Date());
           res.type('application/pdf');
           res.send(pdf);
-          console.log(random, "Total Process  End", new Date())
+          console.log(random, "Total Process  End", new Date());
+          console.log(random, "Total Time sec", (startTime - new Date()) / 1000);
         } catch (e) {
-          console.log(e, 'here I am');
+          console.log(e);
           res.statusCode = 500;
           res.send('Error while processing PDF');
         } finally {
@@ -79,7 +95,9 @@ const mergeMultiplePDF = (pdfFiles, random) => {
   );
 };
 
-function getRandom() {
+
+
+async function getRandom() {
   return Math.floor(Math.random() * 1000000000000);
 }
 
