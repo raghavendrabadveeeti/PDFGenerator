@@ -8,15 +8,13 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
       (async () => {
 
-        let pdf = printPDF(req, res);
+        const DELTA = 0.8;
         let random = getRandom();
-        let fileName = 'page' + random + '.pdf';
         const browser = await puppeteer.launch({headless: true, pipe: true, ignoreHTTPSErrors: true})
         try {
           console.log(random, "Total Process Start", new Date());
 
           const page = await browser.newPage();
-          //await page.setViewport({width: 1920, height: 1080});
           let queryString = req._parsedUrl.search;
 
           // console.log(queryString);
@@ -26,11 +24,16 @@ router.get('/', function (req, res, next) {
             waitLoad : true,
             timeout  : 0
           });
+
+          let maximumPageRenderSize = await page.evaluate(() => maximumPageRenderSize);
+          maximumPageRenderSize = (!maximumPageRenderSize) ? [11.69, 8.27] : maximumPageRenderSize;
+
           const pdf = await page.pdf(
               {
-                //margin         : {left: '2cm', top: '4cm', right: '1cm', bottom: '2.5cm'},
-                format         : 'A2',
-                printBackground: true
+                height         : maximumPageRenderSize[0] + DELTA + 'in',
+                width          : maximumPageRenderSize[1] + 'in',
+                printBackground: true,
+                margin         : {top: 0, right: '0.2in', bottom: 0, left: '0.4in'},
               });
 
           res.type('application/pdf');

@@ -7,6 +7,8 @@
     "start": "node ./bin/www",
     "build": "pkg package.json",
     "dev": "nodemon ./bin/www",
+    "pm2": "pm2 start ./bin/www  -i 5",
+    "pm2stop": "pm2 stop all",
     "stop": "lsof -ti :3000 | xargs kill"
   },
   "dependencies": {
