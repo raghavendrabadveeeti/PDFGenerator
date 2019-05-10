@@ -6,16 +6,6 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-      async function getPageSize(page) {
-        let maximumPageRenderSize;
-        try {
-          maximumPageRenderSize = await page.evaluate(() => maximumPageRenderSize);
-        } catch (e) {
-          console.log(e);
-          maximumPageRenderSize = [11.69, 8.27];
-        }
-        return maximumPageRenderSize;
-      }
 
       (async () => {
 
@@ -40,6 +30,11 @@ router.get('/', function (req, res, next) {
           });
 
           console.log(random, "Page Loaded Completed", new Date());
+
+          if (await hasPageErrors(page)) {
+            throw new Error("Unable to render page ");
+          }
+
           let maximumPageRenderSize = await getPageSize(page);
 
           const pdf = await page.pdf(
@@ -47,7 +42,8 @@ router.get('/', function (req, res, next) {
                 height         : maximumPageRenderSize[0] + DELTA + 'in',
                 width          : maximumPageRenderSize[1] + 'in',
                 printBackground: true,
-                margin         : {top: 0, right: '0.2in', bottom: 0, left: '0.4in'},
+                margin         : {top: '0.4in', right: '0.2in', bottom: 0, left: '0.4in'},
+
               });
 
           console.log(random, "PDF  Completed", new Date());
@@ -95,7 +91,27 @@ const mergeMultiplePDF = (pdfFiles, random) => {
   );
 };
 
+async function getPageSize(page) {
+  let maximumPageRenderSize;
+  try {
+    maximumPageRenderSize = await page.evaluate(() => maximumPageRenderSize);
+  } catch (e) {
+    console.log(e);
+    maximumPageRenderSize = [11.69, 8.27];
+  }
+  return maximumPageRenderSize;
+}
 
+async function hasPageErrors(page) {
+  let pagenotavailable = false;
+  try {
+    pagenotavailable = await page.evaluate(() => pagenotavailable);
+  } catch (e) {
+    console.log(e);
+    pagenotavailable = false;
+  }
+  return pagenotavailable;
+}
 
 async function getRandom() {
   return Math.floor(Math.random() * 1000000000000);
