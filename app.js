@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended: false}));
 //app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(morgan('combined', {stream: winston.stream}));
+app.use(morgan('combined', {stream: logger.stream}));
 
 app.use('/', indexRouter);
 app.use('/pdf', pagePreview);
