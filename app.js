@@ -1,11 +1,10 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-//var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var fs = require('fs');
-var rfs = require('rotating-file-stream');
-var cors = require('cors')
+
+var cors = require('cors');
+var morgan = require('morgan');
+var logger = require('./config/winston');
 
 var indexRouter = require('./routes/index');
 var pagePreview = require('./routes/pagePreview');
@@ -22,14 +21,7 @@ app.use(express.urlencoded({extended: false}));
 //app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*var logDirectory = path.join(__dirname, 'log');
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-var accessLogStream = rfs('pdfgenerator.log', {
-  interval: '1d', // rotate daily
-  path    : logDirectory
-});*/
-//
-//app.use(logger('common', {stream: accessLogStream}))
+app.use(morgan('combined', {stream: winston.stream}));
 
 app.use('/', indexRouter);
 app.use('/pdf', pagePreview);
@@ -44,6 +36,7 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
 
   // render the error page
   res.status(err.status || 500);

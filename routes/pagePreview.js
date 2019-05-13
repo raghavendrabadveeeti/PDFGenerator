@@ -3,8 +3,8 @@ const puppeteer = require('puppeteer');
 const merge = require('easy-pdf-merge');
 var fileSystem = require('fs');
 var router = express.Router();
+var logger = require('.././config/winston');
 
-/* GET users listing. */
 router.get('/', function (req, res, next) {
 
       (async () => {
@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
         const browser = await puppeteer.launch({headless: true, pipe: true, ignoreHTTPSErrors: true})
         try {
           let startTime = new Date();
-          console.log(random, "Total Process Start", startTime);
+          logger.debug(random + "Total Process Start" + startTime);
 
           const page = await browser.newPage();
           let queryString = req._parsedUrl.search;
@@ -29,7 +29,7 @@ router.get('/', function (req, res, next) {
             timeout  : 0
           });
 
-          console.log(random, "Page Loaded Completed", new Date());
+          logger.debug(random + "Page Loaded Completed" + new Date());
 
           if (await hasPageErrors(page)) {
             throw new Error("Unable to render page ");
@@ -46,13 +46,13 @@ router.get('/', function (req, res, next) {
 
               });
 
-          console.log(random, "PDF  Completed", new Date());
+          logger.debug(random + "PDF  Completed" + new Date());
           res.type('application/pdf');
           res.send(pdf);
-          console.log(random, "Total Process  End", new Date());
-          console.log(random, "Total Time sec", (startTime - new Date()) / 1000);
+          logger.debug(random + "Total Process  End" + new Date());
+          logger.debug(random + "Total Time sec" + (startTime - new Date()) / 1000);
         } catch (e) {
-          console.log(e);
+          logger.error(e.toString());
           res.statusCode = 500;
           res.send('Error while processing PDF');
         } finally {
