@@ -2,6 +2,7 @@ var express = require('express');
 const puppeteer = require('puppeteer');
 const merge = require('easy-pdf-merge');
 var fileSystem = require('fs');
+var utils = require('../utils');
 var router = express.Router();
 var logger = require('.././config/winston');
 
@@ -10,7 +11,8 @@ router.get('/', function (req, res, next) {
       (async () => {
 
         const DELTA = 0.8;
-        let random = getRandom();
+        let random = utils.getRandom();
+
         const browser = await puppeteer.launch({headless: true, pipe: true, ignoreHTTPSErrors: true})
         try {
           let startTime = new Date();
@@ -20,8 +22,6 @@ router.get('/', function (req, res, next) {
           let queryString = req._parsedUrl.search;
 
           req.setTimeout(0);
-
-          // console.log(queryString);
 
           await page.goto('http://localhost:8885/' + queryString, {
             waitUntil: "networkidle0",
@@ -52,6 +52,7 @@ router.get('/', function (req, res, next) {
           logger.debug(random + "Total Process  End" + new Date());
           logger.debug(random + "Total Time sec" + (startTime - new Date()) / 1000);
         } catch (e) {
+          logger.error('Failed to generate PDF' + e.toString());
           logger.error(e.toString());
           res.statusCode = 500;
           res.send('Error while processing PDF');
@@ -111,10 +112,6 @@ async function hasPageErrors(page) {
     pagenotavailable = false;
   }
   return pagenotavailable;
-}
-
-async function getRandom() {
-  return Math.floor(Math.random() * 1000000000000);
 }
 
 module.exports = router;
