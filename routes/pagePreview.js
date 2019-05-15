@@ -5,13 +5,13 @@ var fileSystem = require('fs');
 var utils = require('../utils');
 var router = express.Router();
 var logger = require('.././config/winston');
-const uuid = require('uuid/v1');
+const uuidV1 = require('uuid/v1');
 
 router.get('/', function (req, res, next) {
       (async () => {
         const DELTA = 0.8;
         const INCH = 'in';
-        let uuid = uuid();
+        let uuid = uuidV1();
         let browser = null;
         try {
 
