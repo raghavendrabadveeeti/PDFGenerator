@@ -3,7 +3,6 @@ var express = require('express');
 const puppeteer = require('puppeteer');
 const merge = require('easy-pdf-merge');
 var fileSystem = require('fs');
-var utils = require('../utils');
 var router = express.Router();
 var logger = require('.././config/winston');
 const uuidV1 = require('uuid/v1');
