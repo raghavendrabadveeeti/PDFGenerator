@@ -26,7 +26,8 @@
     "cors": "2.8.5",
     "winston": "3.2.1",
     "app-root-path": "2.2.1",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "properties-reader": "0.0.16"
   },
   "devDependencies": {
     "nodemon": "1.18.11"

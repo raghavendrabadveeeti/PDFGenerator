@@ -1,3 +1,4 @@
+var Globals = require('../config/globals');
 var express = require('express');
 const puppeteer = require('puppeteer');
 const merge = require('easy-pdf-merge');
@@ -23,8 +24,7 @@ router.get('/', function (req, res, next) {
           let queryString = req._parsedUrl.search;
 
           req.setTimeout(0);
-
-          await page.goto('http://localhost:8885/' + queryString, {
+          await page.goto(Globals.remoteServerURL() + '/' + queryString, {
             waitUntil: "networkidle0",
             waitLoad : true,
             timeout  : 0
