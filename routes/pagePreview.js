@@ -20,10 +20,10 @@ router.get('/', function (req, res, next) {
           logger.debug(uuid + "Total Process Start" + startTime);
 
           const page = await browser.newPage();
-          let queryString = req._parsedUrl.search;
+          let queryString = req.query.url;
 
           req.setTimeout(0);
-          await page.goto(Globals.remoteServerURL() + '/' + queryString, {
+          await page.goto(queryString, {
             waitUntil: "networkidle0",
             waitLoad : true,
             timeout  : 0
